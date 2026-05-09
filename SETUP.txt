@@ -1,0 +1,33 @@
+Postgraduate Digital Administration System — local setup (Laravel 11 + Inertia/React)
+
+Prerequisites: PHP 8.2+, Composer, Node 18+.
+
+1) Install PHP dependencies
+   cd postgraduate-digital-administration-system
+   composer install
+
+2) Environment
+   copy .env.example .env
+   php artisan key:generate
+
+   For SQLite (simplest):
+   - Create database\database.sqlite (empty file)
+   - Set DB_CONNECTION=sqlite and comment/remove other DB_* keys in .env
+
+3) Migrate + seed (workflow rules + demo users + demo submission)
+   php artisan migrate:fresh --seed
+
+   Demo accounts (password: password):
+   - student@example.com   (student)
+   - supervisor@example.com (supervisor)
+
+4) Frontend
+   npm install
+   npm run dev
+
+5) Run app
+   php artisan serve
+
+Notes:
+- Domain notifications use table domain_notifications (not Laravel framework notifications schema).
+- API routes live under /api and use Sanctum Bearer tokens from POST /api/login.
