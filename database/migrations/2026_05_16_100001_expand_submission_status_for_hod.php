@@ -9,13 +9,25 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+        $driver = Schema::getConnection()->getDriverName();
+
+        if ($driver === 'sqlite') {
             Schema::table('submissions', function (Blueprint $table) {
                 $table->string('status', 50)->default('draft')->change();
             });
-        } else {
-            DB::statement("ALTER TABLE submissions MODIFY status VARCHAR(50) NOT NULL DEFAULT 'draft'");
+
+            return;
         }
+
+        if ($driver === 'pgsql') {
+            DB::statement('ALTER TABLE submissions ALTER COLUMN status TYPE VARCHAR(50) USING status::text');
+            DB::statement("ALTER TABLE submissions ALTER COLUMN status SET DEFAULT 'draft'");
+            DB::statement('ALTER TABLE submissions ALTER COLUMN status SET NOT NULL');
+
+            return;
+        }
+
+        DB::statement("ALTER TABLE submissions MODIFY status VARCHAR(50) NOT NULL DEFAULT 'draft'");
     }
 
     public function down(): void
