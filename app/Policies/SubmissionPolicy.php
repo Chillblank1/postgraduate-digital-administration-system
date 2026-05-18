@@ -32,7 +32,8 @@ class SubmissionPolicy
     {
         return $this->ownsStudentSide($user, $submission)
             || $this->ownsSupervisorSide($user, $submission)
-            || $user->role === UserRole::Admin;
+            || $user->role === UserRole::Admin
+            || $this->manageAsHod($user, $submission);
     }
 
     public function update(User $user, Submission $submission): bool
@@ -68,6 +69,23 @@ class SubmissionPolicy
         }
 
         return $submission->status === SubmissionStatus::SubmittedPendingSupervisor;
+    }
+
+    public function manageAsHod(User $user, Submission $submission): bool
+    {
+        if ($user->role !== UserRole::Hod) {
+            return false;
+        }
+
+        $hodDepartment = trim((string) ($user->department ?? ''));
+        if ($hodDepartment === '') {
+            return false;
+        }
+
+        $submission->loadMissing('student');
+
+        return $submission->student !== null
+            && trim((string) ($submission->student->department ?? '')) === $hodDepartment;
     }
 
     private function ownsStudentSide(User $user, Submission $submission): bool

@@ -67,4 +67,34 @@ class Submission extends Model
     {
         return $this->hasMany(DocumentVersion::class)->orderByDesc('version_number');
     }
+
+    public function evaluatorAssignments(): HasMany
+    {
+        return $this->hasMany(EvaluatorAssignment::class);
+    }
+
+    public function externalExaminerProposals(): HasMany
+    {
+        return $this->hasMany(ExternalExaminerProposal::class);
+    }
+
+    public function hdcPresentations(): HasMany
+    {
+        return $this->hasMany(HdcPresentation::class);
+    }
+
+    public function honorariumClaims(): HasMany
+    {
+        return $this->hasMany(HonorariumClaim::class);
+    }
+
+    public function thesisEvaluations(): HasMany
+    {
+        return $this->hasMany(ThesisEvaluation::class);
+    }
+
+    public function submissionEvaluations(): HasMany
+    {
+        return $this->hasMany(SubmissionEvaluation::class);
+    }
 }

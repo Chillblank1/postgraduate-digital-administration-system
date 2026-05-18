@@ -47,6 +47,22 @@ class UserFactory extends Factory
         ]);
     }
 
+    public function hod(): static
+    {
+        return $this->state(fn () => [
+            'role' => UserRole::Hod,
+            'department' => 'Computer Science',
+        ]);
+    }
+
+    public function internalEvaluator(): static
+    {
+        return $this->state(fn () => [
+            'role' => UserRole::InternalEvaluator,
+            'department' => 'Computer Science',
+        ]);
+    }
+
     public function unverified(): static
     {
         return $this->state(fn () => [

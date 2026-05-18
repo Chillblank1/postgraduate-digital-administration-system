@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Hod\HodWorkspaceController;
 use App\Http\Controllers\Inertia\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Inertia\DashboardController;
 use App\Http\Controllers\Inertia\SubmissionController;
@@ -31,4 +32,19 @@ Route::middleware('auth')->group(function () {
         ->name('supervisor.submissions.show');
     Route::post('/supervisor/submissions/{submission}/review', [SupervisorSubmissionController::class, 'review'])
         ->name('supervisor.submissions.review');
+
+    Route::middleware('hod')->prefix('hod')->name('hod.')->group(function () {
+        Route::get('/', [HodWorkspaceController::class, 'index'])->name('dashboard');
+        Route::get('honorarium-claims', [HodWorkspaceController::class, 'honorariumClaims'])->name('honorarium.index');
+        Route::patch('honorarium-claims/{honorarium_claim}', [HodWorkspaceController::class, 'processHonorariumClaim'])
+            ->name('honorarium.update');
+
+        Route::get('submissions/{submission}', [HodWorkspaceController::class, 'showSubmission'])->name('submissions.show');
+        Route::post('submissions/{submission}/internal-evaluators', [HodWorkspaceController::class, 'assignInternalEvaluator'])
+            ->name('submissions.internal-evaluators.store');
+        Route::post('submissions/{submission}/external-examiner-proposals', [HodWorkspaceController::class, 'proposeExternalExaminer'])
+            ->name('submissions.external-proposals.store');
+        Route::post('submissions/{submission}/forward-fpgc-r', [HodWorkspaceController::class, 'forwardToFpgc'])
+            ->name('submissions.forward-fpgc-r');
+    });
 });
